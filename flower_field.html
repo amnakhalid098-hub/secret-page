@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flower Field</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Comic Sans MS', cursive;
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  #game-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: url("flowerfield.png") center/cover no-repeat;
+}
+
+  /* Instruction text */
+  #instruction {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    text-align: center;
+    font-size: 1.2rem;        /* small font */
+    color: pink;              /* readable on background */
+    text-shadow: 1px 1px 3px black;
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  /* Invisible clickable flowers */
+  .flower {
+    position: absolute;
+    cursor: pointer;
+    width: 8%;
+    height: 6%;
+    background: rgba(255, 0, 0, 0); /* invisible box */
+    border-radius: 50%;
+    z-index: 10;
+  }
+
+  /* Hint bubble */
+  #hint {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background: rgba(255,255,255,0.9);
+    padding: 12px 22px;
+    border-radius: 25px;
+    font-size: 1rem;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    z-index: 100;
+  }
+
+  /* Inventory bar */
+  #inventory {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 20;
+  }
+
+  .slot {
+    width: 40px;
+    height: 40px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid white;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+  }
+
+  .slot.unlocked {
+    opacity: 1;
+  }
+
+</style>
+</head>
+<body>
+
+<div id="game-wrapper">
+  <div id="instruction"></div>
+  <div id="inventory"></div>
+</div>
+
+<div id="hint"></div>
+
+<script>
+/* Flower positions - adjust according to your painting */
+const spots = [
+  [18, 80], [35, 85], [52, 82], [78, 88], 
+  [12, 72], [44, 75], [68, 71], [88, 76], 
+  [22, 62], [41, 60], [58, 61], [75, 64]  
+];
+
+/* Random correct flower */
+let correctIndex = Math.floor(Math.random() * spots.length);
+
+/* Multiple wrong messages */
+const wrongTexts = [
+  "Oops… that flower is hiding its secret today!",
+  "Not quite… maybe another flower knows 🌸",
+  "Haha, this one’s shy! Try a different bloom 😏",
+  "Hmm… you’re close, but keep searching!",
+  "This petal isn’t talking… try someone else!",
+  "Nope! That one’s just for decoration 🌼",
+  "Almost… but the magic’s somewhere else ✨",
+  "Haha nope! Keep those eyes sharp 👀",
+  "Not this one… maybe the petals are whispering 💭",
+  "Flower tricked you! Try again 🌺"
+];
+
+/* Inventory update */
+function updateInventory() {
+  const inv = document.getElementById("inventory");
+  inv.innerHTML = "";
+  for(let i=1; i<=7; i++) {
+    const s = document.createElement("div");
+    s.className = "slot";
+    if(localStorage.getItem("reward"+i)) {
+      s.innerHTML = "🌸";
+      s.classList.add("unlocked");
+    } else {
+      s.innerHTML = "🔒";
+    }
+    inv.appendChild(s);
+  }
+}
+
+/* Wrong flower click */
+function wrongFlower() {
+  const h = document.getElementById("hint");
+  h.innerText = wrongTexts[Math.floor(Math.random() * wrongTexts.length)];
+  h.style.display = "block";
+  setTimeout(() => h.style.display = "none", 2000);
+}
+
+/* Correct flower click */
+function correctFlower(){
+  localStorage.setItem("reward1","yes");
+
+  document.body.style.opacity = 0;
+  document.body.style.transition = "1s";
+
+  setTimeout(()=>{
+    window.location.href="reward1.html";
+  },1000);
+}
+/* Typing effect */
+function typeText(el, text) {
+  let i = 0;
+  el.innerHTML = "";
+  const interval = setInterval(() => {
+    el.innerHTML += text[i];
+    i++;
+    if(i >= text.length) clearInterval(interval);
+  }, 50);
+}
+
+/* On page load */
+window.onload = () => {
+  const wrapper = document.getElementById("game-wrapper");
+
+  /* create flowers */
+  spots.forEach((pos,i) => {
+    const f = document.createElement("div");
+    f.className = "flower";
+    f.style.left = pos[0] + "%";
+    f.style.top = pos[1] + "%";
+    f.onclick = (i === correctIndex) ? correctFlower : wrongFlower;
+    wrapper.appendChild(f);
+  });
+
+  updateInventory();
+  typeText(document.getElementById("instruction"), "Find the hidden symbol among the flowers… Some flowers are tricky… keep your eyes open 🌿");
+};
+</script>
+
+</body>
+</html>
