@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reward</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#fce4f3;
+  font-family:'Comic Sans MS', cursive;
+  text-align:center;
+  color:#555;
+}
+
+/* reward card */
+.card{
+  background:white;
+  padding:40px 50px;
+  border-radius:20px;
+  box-shadow:0 0 30px rgba(255,182,193,0.6);
+  animation:fadeIn 1.2s ease;
+}
+
+/* treasure icon */
+.treasure{
+  font-size:5rem;
+  margin:15px 0;
+  animation:pop 1s ease;
+}
+
+/* button */
+button{
+  margin-top:25px;
+  padding:12px 28px;
+  border:none;
+  border-radius:25px;
+  font-size:1rem;
+  background:linear-gradient(45deg,pink,#ff9de6);
+  color:white;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  transform:scale(1.07);
+  box-shadow:0 0 15px pink;
+}
+
+/* animations */
+@keyframes pop{
+  0%{transform:scale(0) rotate(180deg); opacity:0;}
+  100%{transform:scale(1) rotate(0); opacity:1;}
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(30px);}
+  to{opacity:1; transform:translateY(0);}
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <div>The field offers you a gift…</div>
+
+  <div class="treasure">🌸</div>
+
+  <b>Petal of Curiosity</b>
+  <p>A reward for those who explore gently and notice hidden things.</p>
+
+  <button onclick="goNext()">Continue the Hunt →</button>
+
+</div>
+
+<script>
+function goNext(){
+  window.location.href="riddle1.html";
+}
+</script>
+
+</body>
+</html>
