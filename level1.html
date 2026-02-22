@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Level 1</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Shadows Into Light',cursive;
+  background:linear-gradient(135deg,#f8d7da,#f5c2c7,#eeb4bb,#e4a1aa);
+  background-size:400% 400%;
+  animation:bgMove 12s ease infinite;
+}
+
+@keyframes bgMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+.container{
+text-align:center;
+max-width:600px;
+padding:30px;
+border-radius:25px;
+background:rgba(255,255,255,.35);
+backdrop-filter:blur(14px);
+box-shadow:0 10px 40px rgba(0,0,0,.15);
+}
+
+p{
+font-size:20px;
+color:#444;
+line-height:1.6;
+min-height:150px;
+}
+
+#choices{
+display:none;
+margin-top:20px;
+}
+
+.btn{
+margin:10px;
+padding:12px 22px;
+font-size:18px;
+border:none;
+border-radius:20px;
+cursor:pointer;
+background:linear-gradient(135deg,#f3a6ad,#e38f98);
+color:white;
+box-shadow:0 5px 15px rgba(0,0,0,.15);
+transition:.25s;
+}
+
+.btn:hover{
+transform:scale(1.12) rotate(-2deg);
+}
+
+/* GLITCH TEXT */
+.glitch{
+font-size:32px;
+font-weight:bold;
+color:#00ffcc;
+position:relative;
+animation:glitch 0.15s infinite;
+}
+
+@keyframes glitch{
+0%{transform:translate(2px,-2px)}
+25%{transform:translate(-2px,2px)}
+50%{transform:translate(2px,2px)}
+75%{transform:translate(-2px,-2px)}
+100%{transform:translate(0,0)}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<p id="text"></p>
+
+<div id="choices">
+<div style="margin-bottom:15px;">choose wisely 😼</div>
+
+<button class="btn" onclick="location.href='trap1.html'">
+this one? seriously? 👀
+</button>
+
+<button class="btn" onclick="correctChoice()">
+oh come on… not this 👺
+</button>
+
+<button class="btn" onclick="location.href='trap2.html'">
+definitely wrong move 😼
+</button>
+
+</div>
+</div>
+
+<audio id="typeSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=keyboard-typing-5997.mp3"></audio>
+
+<script>
+// -------- Typing function that supports <br> --------
+function typeLineWithBreaks(text, container, speed=50, callback) {
+    let i = 0;
+    
+    function type() {
+        if (i < text.length) {
+            if (text.substr(i, 4) === "<br>") { 
+                container.appendChild(document.createElement("br")); // insert line break
+                i += 4; // skip the <br> part
+            } else {
+                container.innerHTML += text[i]; // type normal character
+                i++;
+            }
+            setTimeout(type, speed);
+        } else if (callback) {
+            callback();
+        }
+    }
+
+    type();
+}
+
+// -------- Variables --------
+const textBox = document.getElementById("text");
+const sound = document.getElementById("typeSound");
+
+const lines = [
+  "system checking intelligence level…",
+  "please wait…",
+  "scanning brain cells…"
+];
+
+const afterScan = [
+  "hmm<br>results look suspicious 🤨<br>double checking the results 🧠",
+  "analysis incomplete<br>Subject TOO CUTE to CALCULATE 😔"
+];
+
+let i = 0;
+let dots = null;
+
+// -------- Play typing sound --------
+function playSound() {
+  if(sound){
+    sound.currentTime = 0;
+    sound.play().catch(e=>console.warn("Sound failed:",e));
+  }
+}
+
+// -------- Type normal line --------
+function typeLine(text,speed=35,callback){
+  if(!textBox){ if(callback) callback(); return; }
+  let j=0;
+  const line = document.createElement("div");
+  line.innerHTML="";
+  textBox.appendChild(line);
+
+  function type(){
+    if(j<text.length){
+      line.innerHTML+=text.charAt(j);
+      playSound();
+      j++;
+      setTimeout(type,speed);
+    } else if(callback) callback();
+  }
+  type();
+}
+
+// -------- Dots animation --------
+function showDots(duration=15000, callback){ // 15 sec for first, 5 sec between others
+  if(!textBox){ if(callback) callback(); return; }
+  dots=document.createElement("div");
+  dots.innerHTML=".";
+  textBox.appendChild(dots);
+
+  let count=1;
+  dots.interval=setInterval(()=>{
+    dots.innerHTML=".".repeat(count);
+    count=count===3?1:count+1;
+  },500);
+
+  setTimeout(()=>{
+    clearInterval(dots.interval);
+    dots.remove();
+    if(callback) callback();
+  }, duration);
+}
+
+// -------- Start initial scan --------
+function startScan(){
+  if(!textBox) return;
+  function nextLine(){
+    if(i<lines.length){
+      typeLine(lines[i],35,()=>{
+        i++;
+        if(i===lines.length){
+          showDots(15000, afterSequence); // first dots 15 sec
+        } else nextLine();
+      });
+    }
+  }
+  nextLine();
+}
+
+// -------- After scan messages --------
+function afterSequence(){
+  let k=0;
+  function nextAfter(){
+    if(k<afterScan.length){
+      typeLineWithBreaks(afterScan[k], textBox,35,()=>{
+        k++;
+        if(k<afterScan.length){
+          setTimeout(nextAfter,5000); // 5 sec between lines
+        } else showButtons();
+      });
+    }
+  }
+  nextAfter();
+}
+
+// -------- Show choice buttons --------
+function showButtons(){
+  const choices = document.getElementById("choices");
+  if(choices) choices.style.display="block";
+}
+
+// -------- Correct choice action --------
+function correctChoice(){
+  // Full black overlay
+  const overlay = document.createElement("div");
+  overlay.style.position="fixed";
+  overlay.style.top="0";
+  overlay.style.left="0";
+  overlay.style.width="100vw";
+  overlay.style.height="100vh";
+  overlay.style.display="flex";
+  overlay.style.justifyContent="center";
+  overlay.style.alignItems="center";
+  overlay.style.flexDirection="column";
+  overlay.style.zIndex="9999";
+  overlay.style.backgroundColor="black";
+  document.body.appendChild(overlay);
+
+  // Pink glowy text first
+  const pinkText = document.createElement("div");
+  pinkText.style.color="#ff69b4";
+  pinkText.style.fontSize="3rem";
+  pinkText.style.textAlign="center";
+  pinkText.style.textShadow="0 0 20px #ff69b4";
+  pinkText.innerText="LEVEL COMPLETE";
+  overlay.appendChild(pinkText);
+
+  setTimeout(()=>{
+    pinkText.remove();
+
+    // Red glowy text second
+    const redText = document.createElement("div");
+    redText.style.color="#ff0000";
+    redText.style.fontSize="3rem";
+    redText.style.textAlign="center";
+    redText.style.textShadow="0 0 20px #ff0000";
+    redText.innerText="SYSTEM UNLOCKING...";
+    overlay.appendChild(redText);
+
+    setTimeout(()=>{
+      window.location.href="level2.html";
+    },2000);
+
+  },2000);
+}
+
+// -------- On page load --------
+window.onload = ()=>{
+  if(sessionStorage.getItem("level1done")){
+    showButtons();
+  } else {
+    sessionStorage.setItem("level1done",true);
+    startScan();
+  }
+};
+</script>
+
+</body>
+</html>
