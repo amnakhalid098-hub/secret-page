@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Riddle</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#fce4f3;
+  font-family:'Comic Sans MS', cursive;
+  text-align:center;
+}
+
+/* Card */
+#box{
+  background:white;
+  padding:40px 50px;
+  border-radius:20px;
+  box-shadow:0 0 25px rgba(255,182,193,0.6);
+  max-width:90%;
+}
+
+/* Title */
+h2{
+  margin-top:0;
+  color:#d48fb3;
+}
+
+/* Input */
+input{
+  margin-top:15px;
+  padding:12px 20px;
+  border-radius:25px;
+  border:2px solid pink;
+  text-align:center;
+  outline:none;
+}
+
+input:focus{
+  border-color:#ff9de6;
+}
+
+/* Button */
+button{
+  margin-top:20px;
+  padding:12px 28px;
+  border:none;
+  border-radius:25px;
+  background:linear-gradient(45deg,pink,#ff9de6);
+  color:white;
+  cursor:pointer;
+  font-size:1rem;
+}
+
+button:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 12px pink;
+}
+
+/* Wrong text */
+#wrong{
+  color:#e57373;
+  margin-top:15px;
+  display:none;
+}
+  #unlockScreen{
+  position:fixed;
+  inset:0;
+  background:black;
+  color:#ff9de6;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:2rem;
+  opacity:0;
+  pointer-events:none;
+  transition:1s;
+  text-shadow:0 0 20px #ff9de6;
+  z-index:999;
+}
+
+#unlockScreen.show{
+  opacity:1;
+}
+</style>
+</head>
+<body>
+
+<div id="box">
+
+<h2>📜 The field approves 🌿...</h2>
+
+<p><b>Riddle to unlock the path:</b></p>
+
+<p style="font-style:italic;">
+What’s orange and sounds like a parrot?
+</p>
+
+<input id="answer" placeholder="type answer...">
+<br>
+
+<button onclick="check()">Unlock Path →</button>
+
+<div id="wrong">Nope 😞 try again 😋 </div>
+
+</div>
+<div id="unlockScreen">✦ The Path Has Chosen You ✦</div>
+<script>
+function check(){
+  let ans=document.getElementById("answer").value.toLowerCase().trim();
+
+  if(ans==="a carrot" || ans==="carrot"){
+
+    const screen=document.getElementById("unlockScreen");
+    screen.classList.add("show");
+
+    setTimeout(()=>{
+      window.location.href="whispering_woods.html";
+    },2000);
+
+  }else{
+    document.getElementById("wrong").style.display="block";
+  }
+}
+</script>
+
+</body>
+</html>
