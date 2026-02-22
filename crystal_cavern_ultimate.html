@@ -3,248 +3,271 @@
 <head>
 <meta charset="UTF-8">
 <title>Crystal Cavern Ultimate</title>
+
 <style>
-body {
-  background: #0b0c2a;
-  color: white;
-  font-family: monospace;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  margin: 0;
-  overflow: hidden;
+body{
+background:#0b0c2a;
+color:white;
+font-family:monospace;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+height:100vh;
+margin:0;
+overflow:hidden;
 }
 
-#cavern {
-  display: grid;
-  grid-template-columns: repeat(7, 60px);
-  grid-template-rows: repeat(6, 60px);
-  gap: 2px;
-  position: relative;
-  z-index: 1;
+/* GRID */
+#cavern{
+display:grid;
+grid-template-columns:repeat(7,60px);
+grid-template-rows:repeat(6,60px);
+gap:2px;
+position:relative;
+z-index:1;
 }
 
-.cell {
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  position: relative;
-  transition: transform 0.2s;
+.cell{
+width:60px;
+height:60px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:32px;
 }
 
-.wall { background: #222; }
-.path { background: #0b0c2a; }
-.start { background: #0a3; border-radius: 50%; }
-.end { background: #f90; border-radius: 50%; }
-.player { color: #fff; font-weight: bold; }
+.wall{background:#222;}
+.path{background:#0b0c2a;}
+.start{background:#0a3;border-radius:50%;}
+.end{background:#f90;border-radius:50%;}
+.player{font-weight:bold}
 
-.crystal, .mirror, .secret { cursor: pointer; position: relative; z-index: 2; }
+/* ITEMS */
+.crystal{animation:glow 1s infinite alternate;cursor:pointer}
+.mirror{animation:mirrorGlow 1s infinite alternate;cursor:pointer}
+.secret{animation:secretGlow 1s infinite alternate}
 
-.crystal { animation: glow 1s infinite alternate; }
-.mirror { animation: mirrorGlow 1s infinite alternate; }
-.secret { animation: secretGlow 1s infinite alternate; }
+@keyframes glow{from{text-shadow:0 0 5px #0ff}to{text-shadow:0 0 20px #0ff}}
+@keyframes mirrorGlow{from{text-shadow:0 0 5px #f0f}to{text-shadow:0 0 20px #f0f}}
+@keyframes secretGlow{from{text-shadow:0 0 5px #ff0}to{text-shadow:0 0 25px #ff0}}
 
-@keyframes glow { from { text-shadow:0 0 5px #0ff; } to { text-shadow:0 0 20px #0ff; } }
-@keyframes mirrorGlow { from { text-shadow:0 0 5px #f0f; } to { text-shadow:0 0 20px #f0f; } }
-@keyframes secretGlow { from { text-shadow:0 0 5px #ff0; } to { text-shadow:0 0 25px #ff0; } }
-
-/* Beam animation */
-.beam {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  background: #ff0;
-  border-radius: 50%;
-  z-index: 3;
+/* BEAM */
+.beam{
+position:absolute;
+width:8px;
+height:8px;
+background:#ff0;
+border-radius:50%;
+z-index:5;
 }
 
-/* Floating particle sparkles */
-.particle {
-  position: absolute;
-  width: 6px; height: 6px;
-  background: #0ff;
-  border-radius: 50%;
-  opacity: 0.8;
-  animation: float 3s infinite;
-  pointer-events: none;
-  z-index: 0;
+/* PARTICLES */
+.spark{
+position:absolute;
+width:6px;
+height:6px;
+background:#fff;
+border-radius:50%;
+pointer-events:none;
+animation:spark 1s linear forwards;
 }
 
-@keyframes float {
-  0% { transform: translateY(0) scale(1); opacity: 0.8; }
-  50% { transform: translateY(-20px) scale(1.2); opacity: 1; }
-  100% { transform: translateY(0) scale(1); opacity: 0.8; }
+@keyframes spark{
+0%{transform:scale(0);opacity:1}
+100%{transform:scale(2);opacity:0}
 }
 </style>
 </head>
 <body>
-<h2>✨ Crystal Cavern Ultimate ✨</h2>
+
+<h2>✨ Crystal Cavern ✨</h2>
 <div id="cavern"></div>
 <p>Inventory: <span id="inventory">None</span></p>
 
 <script>
-const paths = [
-  ['#','#','#','#','#','#','#'],
-  ['#','S','.','.','#','.','#'],
-  ['#','.','#','.','.','.','#'],
-  ['#','.','.','#','.','.','#'],
-  ['#','#','.','.','#','E','#'],
-  ['#','#','#','#','#','#','#']
+
+/* MAP */
+const paths=[
+['#','#','#','#','#','#','#'],
+['#','S','.','.','#','.','#'],
+['#','.','#','.','.','.','#'],
+['#','.','.','#','.','.','#'],
+['#','#','.','D','.','E','#'],
+['#','#','#','#','#','#','#']
 ];
 
-const crystals = [
-  {id:1,name:'Blue Crystal',type:'crystal',x:2,y:1},
-  {id:2,name:'Purple Crystal',type:'crystal',x:5,y:1},
-  {id:3,name:'Mirror Crystal',type:'mirror',x:3,y:2,message:'Reflect the light to hit Hidden Prism!'},
-  {id:4,name:'Hidden Prism',type:'secret',x:4,y:4,message:'✨ You found the secret!'}
+/* ITEMS */
+const crystals=[
+{id:1,name:'Blue Crystal',type:'crystal',x:2,y:1},
+{id:2,name:'Purple Crystal',type:'crystal',x:4,y:3},
+{id:3,name:'Mirror Crystal',type:'mirror',x:3,y:2,message:'Reflect the light!'},
+{id:4,name:'Hidden Prism',type:'secret',x:3,y:4,message:'The prism awakens!'}
 ];
 
-let player = {x:1,y:1};
-let inventory = [];
+let player={x:1,y:1};
+let inventory=[];
+let doorOpen=false;
 
-function renderCavern(){
-  const container=document.getElementById('cavern');
-  container.innerHTML='';
-  for(let y=0;y<paths.length;y++){
-    for(let x=0;x<paths[0].length;x++){
-      const cell=document.createElement('div');
-      cell.classList.add('cell');
-      const pathChar=paths[y][x];
-      if(player.x===x && player.y===y){ cell.textContent='🧍'; cell.classList.add('player'); }
-      else{
-        const crystal=crystals.find(c=>c.x===x && c.y===y);
-        if(crystal){
-          if(crystal.type==='crystal'){ 
-            cell.textContent='💎'; 
-            cell.classList.add('crystal'); 
-            cell.onclick=()=>collectCrystal(crystal);
-          }
-          else if(crystal.type==='mirror'){ 
-            cell.textContent='🪞'; 
-            cell.classList.add('mirror'); 
-            cell.onclick=()=>shootBeam(crystal);
-          }
-          else if(crystal.type==='secret'){ 
-            cell.textContent='🔮'; 
-            cell.classList.add('secret'); 
-          }
-        } else {
-          if(pathChar==='#'){ cell.classList.add('wall'); }
-          else if(pathChar==='S'){ cell.classList.add('start'); }
-          else if(pathChar==='E'){ cell.classList.add('end'); }
-          else{ cell.classList.add('path'); }
-        }
-      }
-      container.appendChild(cell);
-    }
-  }
-  document.getElementById('inventory').textContent = inventory.length?inventory.join(', '):'None';
+/* RENDER */
+function render(){
+const grid=document.getElementById("cavern");
+grid.innerHTML="";
+
+for(let y=0;y<paths.length;y++){
+for(let x=0;x<paths[0].length;x++){
+
+const cell=document.createElement("div");
+cell.className="cell";
+
+if(player.x===x && player.y===y){
+cell.textContent="🧍";
 }
 
-// Only crystals disappear; mirrors stay
-function collectCrystal(crystal){
-  if(crystal.type === 'mirror') return; // mirrors never disappear
-  if(!inventory.includes(crystal.name)){
-    inventory.push(crystal.name);
-    if(crystal.message) alert(`✨ ${crystal.message}`);
-    if(Math.random()<0.3){ 
-      crystal.x=Math.floor(Math.random()*5)+1; 
-      crystal.y=Math.floor(Math.random()*4)+1; 
-      createParticle(crystal.x*60+30,crystal.y*60+30); 
-      alert(`⚡ ${crystal.name} glitched!`);
-    } else { 
-      crystal.x=-1; 
-      crystal.y=-1; 
-    }
-    renderCavern();
-  }
+else{
+const item=crystals.find(c=>c.x===x&&c.y===y);
+
+if(item){
+if(item.type==="crystal"){
+cell.textContent="💎";
+cell.classList.add("crystal");
+cell.onclick=()=>collect(item);
+}
+else if(item.type==="mirror"){
+cell.textContent="🪞";
+cell.classList.add("mirror");
+cell.onclick=()=>shootBeam(item);
+}
+else if(item.type==="secret"){
+cell.textContent="🔮";
+cell.classList.add("secret");
+}
+}
+else{
+const tile=paths[y][x];
+
+if(tile==="#")cell.classList.add("wall");
+else if(tile==="S")cell.classList.add("start");
+else if(tile==="E")cell.classList.add("end");
+
+else if(tile==="D"){
+cell.textContent=doorOpen?"🚪":"🔒";
+cell.classList.add("path");
 }
 
-// Shoot mirror beam
+else cell.classList.add("path");
+}
+}
+
+grid.appendChild(cell);
+}
+}
+
+document.getElementById("inventory").textContent=
+inventory.length?inventory.join(", "):"None";
+}
+
+/* COLLECT CRYSTAL */
+function collect(c){
+if(inventory.includes(c.name))return;
+
+inventory.push(c.name);
+c.x=-1;
+c.y=-1;
+render();
+}
+
+/* BEAM SHOOT */
 function shootBeam(mirror){
-  let x=mirror.x,y=mirror.y,dx=0,dy=-1;
-  const beamInterval=setInterval(()=>{
-    x+=dx;y+=dy;
-    if(x<0||y<0||y>=paths.length||x>=paths[0].length||paths[y][x]==='#'){ clearInterval(beamInterval); return; }
-    const beam=document.createElement('div');
-    beam.classList.add('beam');
-    beam.style.left=x*60+26+'px';
-    beam.style.top=y*60+26+'px';
-    document.body.appendChild(beam);
-    setTimeout(()=>beam.remove(),300);
-    const target=crystals.find(c=>c.x===x&&c.y===y&&c.type==='secret');
-    if(target){ 
-      inventory.push(target.name); 
-      alert(`💛 ${target.message}`); 
-      target.x=-1; 
-      target.y=-1; 
-      renderCavern(); 
-      clearInterval(beamInterval); 
-    }
-  },100);
+
+let x=mirror.x;
+let y=mirror.y;
+let dx=0;
+let dy=-1;
+
+const interval=setInterval(()=>{
+
+x+=dx;
+y+=dy;
+
+if(!paths[y]||!paths[y][x]||paths[y][x]==="#"){
+clearInterval(interval);
+return;
 }
 
-// Player movement
-document.addEventListener('keydown',e=>{
-  let nx=player.x,ny=player.y;
-  if(e.key==='ArrowUp') ny--;
-  if(e.key==='ArrowDown') ny++;
-  if(e.key==='ArrowLeft') nx--;
-  if(e.key==='ArrowRight') nx++;
-  if(paths[ny] && paths[ny][nx] && paths[ny][nx]!=='#'){ player={x:nx,y:ny}; renderCavern(); }
-});
+spawnBeam(x,y);
 
-// Particles
-function createParticle(x,y){
-  const p=document.createElement('div'); p.classList.add('particle');
-  p.style.left=x+'px'; p.style.top=y+'px';
-  document.body.appendChild(p); setTimeout(()=>p.remove(),3000);
+const target=crystals.find(c=>c.x===x&&c.y===y&&c.type==="secret");
+
+if(target){
+
+inventory.push(target.name);
+target.x=-1;
+target.y=-1;
+
+unlockDoor(x,y);
+
+clearInterval(interval);
+render();
 }
-setInterval(()=>{ createParticle(Math.random()*window.innerWidth,Math.random()*window.innerHeight); },500);
 
-// How to Play Overlay
-window.addEventListener('load', ()=>{
-  const overlay = document.createElement('div');
-  overlay.style.position='fixed';
-  overlay.style.top='0';
-  overlay.style.left='0';
-  overlay.style.width='100vw';
-  overlay.style.height='100vh';
-  overlay.style.backgroundColor='rgba(0,0,0,0.9)';
-  overlay.style.color='white';
-  overlay.style.display='flex';
-  overlay.style.flexDirection='column';
-  overlay.style.justifyContent='center';
-  overlay.style.alignItems='center';
-  overlay.style.zIndex='9999';
-  overlay.style.textAlign='center';
-  overlay.style.padding='20px';
+},80);
+}
 
-  overlay.innerHTML = `
-    <h2>✨ How to Play Crystal Cavern ✨</h2>
-    <p>Use your <b>arrow keys</b> to move your character 🧍</p>
-    <p>Click on <span style="color:#0ff;">💎 Crystals</span> to collect them!</p>
-    <p>Click on <span style="color:#f0f;">🪞 Mirrors</span> to shoot a magical beam</p>
-    <p>The beam can hit hidden treasures like <span style="color:#ff0;">🔮 Secret Prism</span></p>
-    <p>Collect all treasures to complete the cavern!</p>
-    <button id="closeOverlay" style="
-      margin-top:20px; padding:12px 24px; border:none; border-radius:20px; background:#ba55d3; color:white; cursor:pointer;
-    ">Start Adventure →</button>
-  `;
+/* BEAM VISUAL */
+function spawnBeam(x,y){
+const b=document.createElement("div");
+b.className="beam";
+b.style.left=(x*62+26)+"px";
+b.style.top=(y*62+26)+"px";
+document.body.appendChild(b);
+setTimeout(()=>b.remove(),300);
+}
 
-  document.body.appendChild(overlay);
+/* DOOR MAGIC EFFECT */
+function unlockDoor(px,py){
 
-  document.getElementById('closeOverlay').onclick = ()=>{
-    overlay.remove();
-  };
+doorOpen=true;
+
+/* sparkle burst */
+for(let i=0;i<25;i++){
+const s=document.createElement("div");
+s.className="spark";
+s.style.left=(px*62+30+(Math.random()*40-20))+"px";
+s.style.top=(py*62+30+(Math.random()*40-20))+"px";
+document.body.appendChild(s);
+setTimeout(()=>s.remove(),1000);
+}
+}
+
+/* MOVEMENT */
+document.addEventListener("keydown",e=>{
+
+let nx=player.x;
+let ny=player.y;
+
+if(e.key==="ArrowUp")ny--;
+if(e.key==="ArrowDown")ny++;
+if(e.key==="ArrowLeft")nx--;
+if(e.key==="ArrowRight")nx++;
+
+if(paths[ny]&&paths[ny][nx]&&paths[ny][nx]!=="#" && !(paths[ny][nx]==="D"&&!doorOpen)){
+
+player={x:nx,y:ny};
+
+if(paths[ny][nx]==="E"){
+document.body.style.transition="opacity 1s";
+document.body.style.opacity="0";
+setTimeout(()=>window.location.href="reward_cavern.html",1000);
+}
+
+render();
+}
 });
 
-renderCavern();
+/* INIT */
+render();
+
 </script>
 </body>
 </html>
