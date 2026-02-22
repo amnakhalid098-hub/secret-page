@@ -229,22 +229,18 @@ function wrongItem(it){
 }
 
 /* correct click */
-function correctItem(it){
-  it.classList.add('revealed'); // reveal when clicked
+  function correctItem(){
   saveItem("Ancient Key","🗝️");
   updateInventory();
 
-  const fade=document.getElementById("fade");
-  fade.style.opacity="1";
+  // fade whole page out
+  document.body.style.transition = "opacity 0.8s ease";
+  document.body.style.opacity = "0";
 
-  setTimeout(()=>{
-    document.body.innerHTML=
-      "<div style='background:black;height:100vh;display:flex;align-items:center;justify-content:center;color:#ff69b4;font-size:3rem;text-shadow:0 0 25px #ff69b4;text-align:center;'>The shadows guide you forward… 🌌</div>";
-  },1200);
-
+  // go to next page after fade finishes
   setTimeout(()=>{
     window.location.href="reward2.html";
-  },3200);
+  },800);
 }
 
 /* CREATE ITEMS */
