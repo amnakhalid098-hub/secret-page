@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Trap Page 1 – Tiny Adventure</title>
+<link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Shadows Into Light', cursive;
+  background: linear-gradient(
+    135deg,
+    #f8d7da,
+    #f5c2c7,
+    #eeb4bb,
+    #e4a1aa
+  );
+  background-size:400% 400%;
+  animation:bgMove 12s ease infinite;
+}
+@keyframes bgMove{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+.container{
+  text-align:center;
+  max-width:600px;
+  padding:30px;
+  border-radius:25px;
+  background:rgba(255,255,255,.35);
+  backdrop-filter:blur(14px);
+  box-shadow:0 10px 40px rgba(0,0,0,.15);
+  opacity:0;
+  transform:translateY(40px) scale(.95);
+  animation:enter 1.3s ease forwards;
+}
+@keyframes enter{
+  to{opacity:1; transform:translateY(0) scale(1);}
+}
+img.doodle{
+  width:120px;
+  margin-bottom:20px;
+  opacity:0;
+  transform:translateY(15px);
+  animation:fadeIn 1s ease forwards;
+}
+@keyframes fadeIn{
+  to{opacity:1; transform:translateY(0);}
+}
+p{
+  font-size:18px;
+  color:#444;
+  line-height:1.5;
+  min-height:80px;
+  white-space:pre-line;
+}
+.btn{
+  margin-top:20px;
+  padding:12px 28px;
+  font-size:18px;
+  border:none;
+  border-radius:20px;
+  cursor:pointer;
+  background:linear-gradient(135deg,#f3a6ad,#e38f98);
+  color:white;
+  box-shadow:0 5px 15px rgba(0,0,0,.15);
+  transition:.25s;
+  display:none; /* hidden initially */
+}
+.btn:hover{
+  transform:scale(1.12) rotate(-2deg);
+}
+</style>
+</head>
+<body>
+<div class="container">
+<img src="arrow.png" class="doodle">
+<p id="text"></p>
+<button class="btn" id="giveUp" onclick="goEscape()">I give up 😔</button>
+<button class="btn" id="tryAgain" onclick="tryAgain()">Try again 🔄</button>
+</div>
+
+<script>
+const message = "Wrong choice! But at least you look cute failing 😭😋";
+let textEl = document.getElementById("text");
+let i = 0;
+
+function type(){
+  if(i < message.length){
+    textEl.innerHTML += message.charAt(i);
+    i++;
+    setTimeout(type, 25);
+  } else {
+    // show buttons after typing
+    document.getElementById("giveUp").style.display = "inline-block";
+    document.getElementById("tryAgain").style.display = "inline-block";
+  }
+}
+type();
+
+// button functions
+function goEscape(){
+  window.location.href = "escape.html"; // put your Escape page filename
+}
+function tryAgain(){
+  window.location.href = "level1.html"; // back to Level 1
+}
+</script>
+</body>
+</html>
