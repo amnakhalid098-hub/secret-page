@@ -87,7 +87,7 @@ let playerSequence=[];
 let gameOver=false;
 let failStreak=0;
 let boardSize=16;
-let runes=[]; // indexes of tiles with runes
+let runes=[];
 let collectedRunes=[];
 
 /* create board */
@@ -99,10 +99,11 @@ for(let i=0;i<boardSize;i++){
   tiles.push(t);
 }
 
-/* randomly assign 3 runes per round */
+/* assign runes randomly */
 function assignRunes(){
   runes = [];
   collectedRunes = [];
+  tiles.forEach(tile=>tile.innerHTML=""); // reset visuals
   let empty=Array.from({length:boardSize},(_,i)=>i);
   for(let i=0;i<3;i++){
     let idx=Math.floor(Math.random()*empty.length);
@@ -166,14 +167,15 @@ function playerClick(i){
     tiles[i].innerHTML="✨";
   }
 
-  playerSequence.push(i);
-
-  for(let j=0;j<playerSequence.length;j++){
-    if(playerSequence[j]!==sequence[j]){
-      handleFail();
-      return;
-    }
+  // check correctness BEFORE adding to playerSequence
+  let nextIndex = playerSequence.length;
+  if(sequence[nextIndex] !== i){
+    handleFail();
+    return;
   }
+
+  // correct, add to sequence
+  playerSequence.push(i);
 
   if(playerSequence.length===sequence.length){
     handleWin();
@@ -195,7 +197,7 @@ function handleWin(){
 function handleFail(){
   gameOver=true;
   failStreak++;
-  
+
   if(failStreak>=3){
     showScreen("✦ The Ancient Watcher senses your struggle… the path opens ✦", true, true);
     failStreak=0;
@@ -218,9 +220,9 @@ function showAIHint(){
   let hintTile;
 
   if(rand < 0.5){
-    hintTile = remaining[0]; // next correct tile
+    hintTile = remaining[0];
   } else if(rand < 0.8){
-    hintTile = remaining[Math.floor(Math.random()*remaining.length)]; // random remaining
+    hintTile = remaining[Math.floor(Math.random()*remaining.length)];
   } else {
     return; // 20% chance do nothing
   }
@@ -248,7 +250,7 @@ function showScreen(text,win=false,mercy=false){
       if(countdownEl) countdownEl.innerHTML = "Next area opens in " + count;
       if(count <= 0){
         clearInterval(timer);
-        window.location.href = "next_location.html"; 
+        window.location.href = "next_location.html";
       }
     },1000);
   } else {
