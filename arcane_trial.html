@@ -6,81 +6,81 @@
 
 <style>
 body{
-margin:0;
-background:radial-gradient(circle at center,#12002b,#000);
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-font-family:Segoe UI;
-overflow:hidden;
-color:white;
+  margin:0;
+  background:radial-gradient(circle at center,#12002b,#000);
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Segoe UI;
+  overflow:hidden;
+  color:white;
 }
 
 /* intro / end screen */
 #screen{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:black;
-display:flex;
-justify-content:center;
-align-items:center;
-text-align:center;
-z-index:10;
-color:#ff77ff;
-font-size:2rem;
-text-shadow:0 0 20px #ff77ff;
-transition:1s;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  z-index:10;
+  color:#ff77ff;
+  font-size:2rem;
+  text-shadow:0 0 20px #ff77ff;
+  transition:1s;
 }
 
 /* board */
 #board{
-display:grid;
-grid-template-columns:repeat(4,90px);
-grid-template-rows:repeat(4,90px);
-gap:10px;
-opacity:0;
-transform:scale(.7);
-transition:1.2s;
+  display:grid;
+  grid-template-columns:repeat(4,90px);
+  grid-template-rows:repeat(4,90px);
+  gap:10px;
+  opacity:0;
+  transform:scale(.7);
+  transition:1.2s;
 }
 
 /* tiles */
 .cell{
-width:90px;
-height:90px;
-border:2px solid #a855f7;
-display:flex;
-justify-content:center;
-align-items:center;
-font-size:2.2rem;
-cursor:pointer;
-transition:.3s;
-box-shadow:0 0 10px #7c3aed inset;
+  width:90px;
+  height:90px;
+  border:2px solid #a855f7;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:2.2rem;
+  cursor:pointer;
+  transition:.3s;
+  box-shadow:0 0 10px #7c3aed inset;
 }
 
 .cell:hover{
-background:rgba(168,85,247,.15);
-box-shadow:0 0 20px #a855f7;
+  background:rgba(168,85,247,.15);
+  box-shadow:0 0 20px #a855f7;
 }
 
 /* symbols */
 .mark{
-animation:appear .4s ease;
-text-shadow:0 0 20px #c084fc;
+  animation:appear .4s ease;
+  text-shadow:0 0 20px #c084fc;
 }
 
 @keyframes appear{
-from{transform:scale(0);opacity:0}
-to{transform:scale(1);opacity:1}
+  from{transform:scale(0);opacity:0}
+  to{transform:scale(1);opacity:1}
 }
 
 /* win glow */
 .win{
-background:rgba(168,85,247,.3);
-box-shadow:0 0 25px #c084fc;
+  background:rgba(168,85,247,.3);
+  box-shadow:0 0 25px #c084fc;
 }
 </style>
 </head>
@@ -95,136 +95,170 @@ const board=document.getElementById("board");
 let cells=[];
 let grid=Array(16).fill("");
 let gameOver=false;
+let lossStreak=0; // track consecutive losses
 
 /* intro */
 setTimeout(()=>{
-document.getElementById("screen").style.opacity="0";
-setTimeout(()=>{
-document.getElementById("screen").remove();
-board.style.opacity="1";
-board.style.transform="scale(1)";
-},1000);
+  document.getElementById("screen").style.opacity="0";
+  setTimeout(()=>{
+    document.getElementById("screen").remove();
+    board.style.opacity="1";
+    board.style.transform="scale(1)";
+  },1000);
 },1700);
 
 /* create board */
 for(let i=0;i<16;i++){
-let d=document.createElement("div");
-d.className="cell";
-d.onclick=()=>playerMove(i);
-board.appendChild(d);
-cells.push(d);
+  let d=document.createElement("div");
+  d.className="cell";
+  d.onclick=()=>playerMove(i);
+  board.appendChild(d);
+  cells.push(d);
 }
 
 /* player move */
 function playerMove(i){
-if(grid[i]||gameOver)return;
-place(i,"✦");
-if(checkWin("✦"))return end(true);
-if(grid.every(c=>c))return draw();
-setTimeout(aiMove,500);
+  if(grid[i]||gameOver)return;
+  place(i,"✦");
+  if(checkWin("✦")) return end(true);
+  if(grid.every(c=>c)) return draw();
+  setTimeout(aiMove,500);
 }
 
-/* ai move (balanced) */
+/* ai move with random behavior & mercy mode */
 function aiMove(){
-if(gameOver)return;
+  if(gameOver) return;
 
-/* try win */
-let move=findMove("☾");
-if(move==null) move=findMove("✦");
+  let move = null;
 
-/* else random */
-if(move==null){
-let empty=grid.map((v,i)=>v?null:i).filter(v=>v!=null);
-move=empty[Math.floor(Math.random()*empty.length)];
+  if(lossStreak >= 3){
+    // MERCY MODE: allow player to win next turn
+    move = getMercyMove();
+    lossStreak = 0; // reset after mercy move
+  } else {
+    // 20% chance AI makes a random move to feel human
+    if(Math.random() < 0.2){
+      let empty = grid.map((v,i)=>v?null:i).filter(v=>v!=null);
+      move = empty[Math.floor(Math.random()*empty.length)];
+    } else {
+      move = findMove("☾"); // try to win
+      if(move == null) move = findMove("✦"); // block player
+      if(move == null){
+        let empty = grid.map((v,i)=>v?null:i).filter(v=>v!=null);
+        move = empty[Math.floor(Math.random()*empty.length)];
+      }
+    }
+  }
+
+  place(move,"☾");
+
+  if(checkWin("☾")) return lose();
+  if(grid.every(c=>c)) return draw();
 }
 
-place(move,"☾");
-
-if(checkWin("☾"))return lose();
-if(grid.every(c=>c))return draw();
-}
-
-/* helper */
+/* helper to place symbol */
 function place(i,s){
-grid[i]=s;
-cells[i].innerHTML="<span class='mark'>"+s+"</span>";
+  grid[i]=s;
+  cells[i].innerHTML="<span class='mark'>"+s+"</span>";
 }
 
-/* find winning/block move */
+/* helper to find winning/blocking move */
 function findMove(sym){
-for(let i=0;i<16;i++){
-if(!grid[i]){
-grid[i]=sym;
-if(checkWin(sym,true)){grid[i]="";return i;}
-grid[i]="";
+  for(let i=0;i<16;i++){
+    if(!grid[i]){
+      grid[i]=sym;
+      if(checkWin(sym,true)){ grid[i]=""; return i;}
+      grid[i]="";
+    }
+  }
+  return null;
 }
-}
-return null;
+
+/* mercy move helper: pick a move that allows player to win next turn */
+function getMercyMove(){
+  let empty = grid.map((v,i)=>v?null:i).filter(v=>v!=null);
+
+  // pick the first empty cell that leaves a winning move for player
+  for(let i of empty){
+    grid[i]="☾";
+    if(findMove("✦") != null){
+      grid[i]="";
+      return i; // place AI somewhere that leaves player winning opportunity
+    }
+    grid[i]="";
+  }
+
+  // fallback: just pick random empty cell
+  return empty[Math.floor(Math.random()*empty.length)];
 }
 
 /* win logic */
 const wins=[
-[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15],
-[0,4,8,12],[1,5,9,13],[2,6,10,14],[3,7,11,15],
-[0,5,10,15],[3,6,9,12]
+  [0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15],
+  [0,4,8,12],[1,5,9,13],[2,6,10,14],[3,7,11,15],
+  [0,5,10,15],[3,6,9,12]
 ];
 
 function checkWin(sym,test){
-for(let w of wins){
-if(w.every(i=>grid[i]==sym)){
-if(!test)w.forEach(i=>cells[i].classList.add("win"));
-return true;
-}
-}
-return false;
+  for(let w of wins){
+    if(w.every(i=>grid[i]==sym)){
+      if(!test) w.forEach(i=>cells[i].classList.add("win"));
+      return true;
+    }
+  }
+  return false;
 }
 
 /* outcomes */
 function end(win){
-gameOver=true;
-setTimeout(()=>{
-showScreen("✦ The seal recognizes your mind.<br>The path to the Moon Sanctum is now open. ✦",true);
-},900);
+  gameOver=true;
+  lossStreak=0; // reset streak on win
+  setTimeout(()=>{
+    showScreen("✦ The seal recognizes your mind.<br>The path to the Moon Sanctum is now open. ✦",true);
+  },900);
 }
 
 function lose(){
-gameOver=true;
-setTimeout(()=>{
-showScreen("✦ The sigil remains unconvinced ✦");
-reset();
-},900);
+  gameOver=true;
+  lossStreak++; // increase streak
+  setTimeout(()=>{
+    showScreen("✦ The sigil remains unconvinced ✦");
+    reset();
+  },900);
 }
 
 function draw(){
-gameOver=true;
-setTimeout(()=>{
-showScreen("✦ Balance alone is not enough ✦");
-reset();
-},900);
+  gameOver=true;
+  lossStreak=0; // reset streak
+  setTimeout(()=>{
+    showScreen("✦ Balance alone is not enough ✦");
+    reset();
+  },900);
 }
 
-/* reset */
+/* reset board */
 function reset(){
-setTimeout(()=>{
-grid.fill("");
-cells.forEach(c=>{c.innerHTML="";c.classList.remove("win")});
-gameOver=false;
-document.getElementById("screen").remove();
-},2000);
+  setTimeout(()=>{
+    grid.fill("");
+    cells.forEach(c=>{c.innerHTML="";c.classList.remove("win")});
+    gameOver=false;
+    let oldScreen=document.getElementById("screen");
+    if(oldScreen) oldScreen.remove();
+  },2000);
 }
 
 /* overlay message */
 function showScreen(text,win){
-let s=document.createElement("div");
-s.id="screen";
-s.innerHTML=text;
-document.body.appendChild(s);
+  let s=document.createElement("div");
+  s.id="screen";
+  s.innerHTML=text;
+  document.body.appendChild(s);
 
-if(win){
-setTimeout(()=>{
-window.location.href="moon_sanctum.html";
-},2500);
-}
+  if(win){
+    setTimeout(()=>{
+      window.location.href="moon_sanctum.html";
+    },2500);
+  }
 }
 </script>
 
