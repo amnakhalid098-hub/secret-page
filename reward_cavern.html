@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Crystal Cavern Reward</title>
+
+<style>
+body{
+margin:0;
+height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+font-family: 'Segoe UI', sans-serif;
+color:white;
+overflow:hidden;
+background:linear-gradient(#0b0c2a,#14175a,#0b0c2a);
+opacity:0;
+transition:opacity 1.5s;
+}
+
+/* FLASH SCREEN */
+#flash{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:white;
+z-index:999;
+}
+
+/* reward container */
+#box{
+text-align:center;
+opacity:0;
+transform:scale(.7);
+transition:1.2s;
+}
+
+/* reward icon */
+#reward{
+font-size:90px;
+margin-bottom:20px;
+text-shadow:0 0 25px #7df9ff,0 0 50px #7df9ff;
+animation:float 3s ease-in-out infinite;
+}
+
+/* floating animation */
+@keyframes float{
+0%{transform:translateY(0)}
+50%{transform:translateY(-15px)}
+100%{transform:translateY(0)}
+}
+
+/* message */
+#msg{
+font-size:1.3rem;
+opacity:.9;
+margin-bottom:40px;
+text-shadow:0 0 15px #7df9ff;
+}
+
+/* button */
+button{
+padding:14px 34px;
+font-size:1rem;
+border-radius:30px;
+border:1px solid #7df9ff;
+background:transparent;
+color:#7df9ff;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+background:#7df9ff;
+color:black;
+box-shadow:0 0 20px #7df9ff;
+}
+
+/* sparkles */
+.sparkle{
+position:absolute;
+width:6px;
+height:6px;
+background:#7df9ff;
+border-radius:50%;
+opacity:.8;
+animation:rise linear infinite;
+}
+
+@keyframes rise{
+from{transform:translateY(0)}
+to{transform:translateY(-100vh)}
+}
+</style>
+</head>
+<body>
+
+<div id="flash"></div>
+
+<div id="box">
+<div id="reward">🔮</div>
+
+<div id="msg">
+The cavern has awakened for you.<br>
+Its ancient light now rests in your hands.
+</div>
+
+<button onclick="next()">Continue Journey →</button>
+</div>
+
+<script>
+
+/* add reward to inventory */
+let items=JSON.parse(localStorage.getItem("inventoryItems")||"[]");
+
+if(!items.find(i=>i.name==="Prism of Light")){
+items.push({name:"Prism of Light",icon:"🔮"});
+localStorage.setItem("inventoryItems",JSON.stringify(items));
+}
+
+/* flash → reveal */
+setTimeout(()=>{
+document.getElementById("flash").style.display="none";
+document.body.style.opacity="1";
+},800);
+
+/* materialize reward */
+setTimeout(()=>{
+document.getElementById("box").style.opacity="1";
+document.getElementById("box").style.transform="scale(1)";
+},1200);
+
+/* sparkles */
+for(let i=0;i<40;i++){
+let s=document.createElement("div");
+s.className="sparkle";
+s.style.left=Math.random()*100+"vw";
+s.style.top=Math.random()*100+"vh";
+s.style.animationDuration=(5+Math.random()*10)+"s";
+document.body.appendChild(s);
+}
+
+/* next page */
+function next(){
+document.body.style.opacity="0";
+setTimeout(()=>{
+window.location.href="next_riddle.html"; // CHANGE FILE NAME HERE
+},1200);
+}
+</script>
+
+</body>
+</html>
