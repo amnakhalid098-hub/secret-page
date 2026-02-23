@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Moon Sanctum - Light Path Puzzle</title>
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:radial-gradient(circle at center,#12002b,#000);
+  font-family:Segoe UI;
+  color:white;
+  overflow:hidden;
+}
+
+/* overlay messages */
+#screen{
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  z-index:10;
+  font-size:2rem;
+  text-shadow:0 0 20px #ff77ff;
+  color:#ff77ff;
+  transition:1s;
+}
+
+/* board grid */
+#board{
+  display:grid;
+  grid-template-columns:repeat(4,80px);
+  grid-template-rows:repeat(4,80px);
+  gap:12px;
+  opacity:0;
+  transform:scale(0.7);
+  transition:1s;
+}
+
+/* tiles */
+.tile{
+  width:80px; height:80px;
+  background:rgba(30,0,50,0.6);
+  border:2px solid #7c3aed;
+  border-radius:12px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  font-size:1.5rem;
+  transition:0.3s;
+}
+
+.tile:hover{
+  background:rgba(100,50,150,0.3);
+  box-shadow:0 0 15px #a855f7;
+}
+
+/* glowing animation for sequence */
+.glow{
+  animation:flash 0.6s ease;
+  background:rgba(168,85,247,0.5);
+}
+
+@keyframes flash{
+  0%{background:rgba(168,85,247,0);}
+  50%{background:rgba(168,85,247,0.7);}
+  100%{background:rgba(168,85,247,0);}
+}
+</style>
+</head>
+<body>
+
+<div id="screen">✦ Enter the Moon Sanctum ✦</div>
+<div id="board"></div>
+
+<script>
+const board=document.getElementById("board");
+let tiles=[];
+let sequence=[];
+let playerSequence=[];
+let gameOver=false;
+let failStreak=0; // consecutive failures
+let boardSize=16;
+
+/* intro animation */
+setTimeout(()=>{
+  document.getElementById("screen").style.opacity="0";
+  setTimeout(()=>{
+    document.getElementById("screen").remove();
+    board.style.opacity="1";
+    board.style.transform="scale(1)";
+    startRound();
+  },1000);
+},1500);
+
+/* create board */
+for(let i=0;i<boardSize;i++){
+  let t=document.createElement("div");
+  t.className="tile";
+  t.onclick=()=>playerClick(i);
+  board.appendChild(t);
+  tiles.push(t);
+}
+
+/* start a new round */
+function startRound(){
+  gameOver=false;
+  playerSequence=[];
+  sequence=[];
+  generateSequence(4); // sequence length
+  playSequence();
+}
+
+/* generate random sequence */
+function generateSequence(len){
+  let empty=Array.from({length:boardSize},(_,i)=>i);
+  for(let i=0;i<len;i++){
+    let idx=Math.floor(Math.random()*empty.length);
+    sequence.push(empty[idx]);
+    empty.splice(idx,1);
+  }
+}
+
+/* animate sequence */
+function playSequence(){
+  let delay=0;
+  sequence.forEach((i,index)=>{
+    setTimeout(()=>{
+      tiles[i].classList.add("glow");
+      setTimeout(()=>tiles[i].classList.remove("glow"),400);
+    },delay);
+    delay+=600;
+  });
+}
+
+/* handle player clicks */
+function playerClick(i){
+  if(gameOver) return;
+  tiles[i].classList.add("glow");
+  setTimeout(()=>tiles[i].classList.remove("glow"),300);
+  playerSequence.push(i);
+
+  // check sequence so far
+  for(let j=0;j<playerSequence.length;j++){
+    if(playerSequence[j]!==sequence[j]){
+      handleFail();
+      return;
+    }
+  }
+
+  // full correct sequence
+  if(playerSequence.length===sequence.length){
+    handleWin();
+  }
+}
+
+/* handle success */
+function handleWin(){
+  gameOver=true;
+  failStreak=0;
+  showScreen("✦ The Moon Sanctum accepts your mind ✦", true);
+}
+
+/* handle failure */
+function handleFail(){
+  gameOver=true;
+  failStreak++;
+  
+  if(failStreak>=3){
+    // MERCY MODE: guarantee success next round
+    showScreen("✦ The sigil senses your struggle… the path opens ✦", true, true);
+    failStreak=0;
+  }else{
+    showScreen("✦ The sigil remains unconvinced ✦");
+  }
+}
+
+/* overlay messages with countdown to next area */
+function showScreen(text,win=false,mercy=false){
+  let s=document.createElement("div");
+  s.id="screen";
+  s.innerHTML=text + (win ? "<br><span id='countdown'>Next area opens in 3</span>" : "");
+  document.body.appendChild(s);
+
+  if(win){
+    if(mercy){
+      // auto-win sequence for mercy mode
+      playerSequence = sequence.slice();
+    }
+
+    let count = 3;
+    let countdownEl = document.getElementById('countdown');
+    let timer = setInterval(()=>{
+      count--;
+      if(countdownEl) countdownEl.innerHTML = "Next area opens in " + count;
+      if(count <= 0){
+        clearInterval(timer);
+        window.location.href = "next_location.html"; // <-- CHANGE this to your next page
+      }
+    },1000);
+  } else {
+    // remove normal fail screen after 2s
+    setTimeout(()=>{
+      let old=document.getElementById("screen");
+      if(old) old.remove();
+    },2000);
+  }
+}
+</script>
+
+</body>
+</html>
