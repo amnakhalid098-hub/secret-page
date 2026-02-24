@@ -79,7 +79,7 @@ button:hover{
 <p><b>Riddle to unlock the path:</b></p>
 
 <p style="font-style:italic;">
-What kind of room has no doors or windows?
+What’s brown and sticky?
 </p>
 
 <input id="answer" placeholder="type answer...">
@@ -103,7 +103,7 @@ function checkAnswer(){
   const ans = document.getElementById("answer").value.toLowerCase().trim();
   const wrong = document.getElementById("wrong");
 
-  if(ans === "a mushroom"){
+  if(ans === "a stick"){
     showUnlockAnimation();
   } else {
     wrong.innerText = wrongTexts[Math.floor(Math.random() * wrongTexts.length)];
