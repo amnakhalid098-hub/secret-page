@@ -123,19 +123,23 @@ const lines2=[
 ];
 
 /* typing function */
+/* typing function (FIXED — keeps previous lines visible) */
 async function typeLines(lines){
   for(let line of lines){
     await typeText(line);
+    screen.innerHTML += "<br>";
     await wait(700);
-    screen.innerHTML="";
   }
 }
 
 function typeText(text){
   return new Promise(resolve=>{
     let i=0;
+    let span=document.createElement("span");
+    screen.appendChild(span);
+
     let interval=setInterval(()=>{
-      screen.innerHTML+=text[i];
+      span.innerHTML += text[i];
       i++;
       if(i>=text.length){
         clearInterval(interval);
@@ -148,12 +152,13 @@ function typeText(text){
 function wait(ms){
   return new Promise(r=>setTimeout(r,ms));
 }
-
-/* start intro sequence */
-(async()=>{
+/* start intro sequence*/
+  (async()=>{
   await typeLines(lines1);
   await wait(1500);
   await typeLines(lines2);
+
+  await wait(900);
 
   screen.style.opacity="0";
   await wait(1000);
