@@ -104,72 +104,21 @@ body{
 
 <script>
 const screen=document.getElementById("screen");
+screen.innerHTML="✦ TRIAL OF MINDS INITIATED ✦";
 
-/* lore lines */
-const lines1=[
-"The flowers whispered of your kindness…",
-"The woods spoke of your courage…",
-"The crystals reflected your truth…",
-"And now…",
-"The moon shall judge your soul."
-];
-
-const lines2=[
-"Few reach this place.",
-"None arrive by accident.",
-"You were guided.",
-"You were watched.",
-"You were expected."
-];
-
-/* typing function */
-/* typing function (FIXED — keeps previous lines visible) */
-async function typeLines(lines){
-  for(let line of lines){
-    await typeText(line);
-    screen.innerHTML += "<br>";
-    await wait(700);
-  }
-}
-
-function typeText(text){
-  return new Promise(resolve=>{
-    let i=0;
-    let span=document.createElement("span");
-    screen.appendChild(span);
-
-    let interval=setInterval(()=>{
-      span.innerHTML += text[i];
-      i++;
-      if(i>=text.length){
-        clearInterval(interval);
-        resolve();
-      }
-    },35);
-  });
-}
-
-function wait(ms){
-  return new Promise(r=>setTimeout(r,ms));
-}
-/* start intro sequence*/
-  (async()=>{
-  await typeLines(lines1);
-  await wait(1500);
-  await typeLines(lines2);
-
-  await wait(900);
-
+setTimeout(()=>{
   screen.style.opacity="0";
-  await wait(1000);
-  screen.remove();
 
-  document.getElementById("title").style.opacity="1";
-  document.getElementById("title").style.transform="translateY(0)";
-  board.style.opacity="1";
-  board.style.transform="scale(1)";
-})();
+  setTimeout(()=>{
+    screen.remove();
 
+    document.getElementById("title").style.opacity="1";
+    document.getElementById("title").style.transform="translateY(0)";
+    board.style.opacity="1";
+    board.style.transform="scale(1)";
+  },1000);
+
+},800);
 /* board setup */
 const board=document.getElementById("board");
 let cells=[];
