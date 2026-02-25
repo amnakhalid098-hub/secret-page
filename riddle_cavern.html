@@ -122,15 +122,13 @@ const ans=document.getElementById("answer").value.toLowerCase().trim();
 const wrong=document.getElementById("wrong");
 
 if(ans==="wet"){
-showUnlockAnimation();
+window.location.href="arcane_trial.html"; // ← MOVE REDIRECT HERE
 }else{
 wrong.innerText=wrongTexts[Math.floor(Math.random()*wrongTexts.length)];
 wrong.style.display="block";
 setTimeout(()=>wrong.style.display="none",2000);
 }
 }
-
-window.location.href="arcane_trial.html";
 </script>
 
 </body>
