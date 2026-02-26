@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The House That Remembers — Final Scene</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  font-family: "Georgia", serif;
+  color:#e8e6f0;
+  background:url("classroom.jpg") center/cover no-repeat fixed;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(2px);
+  z-index:1;
+}
+
+/* haunted intro cinematic */
+#intro{
+  position:fixed;
+  inset:0;
+  background:black;
+  color:#c8baff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  font-size:1.3rem;
+  opacity:1;
+  z-index:20;
+  padding:20px;
+  flex-direction:column;
+  animation:fadeOutIntro 3s ease forwards;
+  animation-delay:1s;
+}
+#intro span{
+  opacity:0;
+  display:block;
+  animation:fadeInLine 2s forwards, hauntedDrift 2.5s infinite alternate;
+  animation-delay:0.5s;
+  letter-spacing:1.5px;
+  text-shadow:0 0 5px #c8baff,0 0 12px #b0a0ff;
+}
+
+/* main riddle card */
+#card{
+  position:relative;
+  z-index:2;
+  width:360px;
+  max-width:90%;
+  padding:30px 25px;
+  background:rgba(15,12,25,.88);
+  border:1px solid rgba(180,160,255,.25);
+  border-radius:12px;
+  box-shadow:
+    0 0 30px rgba(140,110,255,.15),
+    inset 0 0 20px rgba(160,130,255,.08);
+  text-align:center;
+  animation:fadeIn 1.8s ease;
+  opacity:0;
+}
+
+h1{
+  margin-top:0;
+  font-size:1.25rem;
+  letter-spacing:1.5px;
+  color:#c6b9ff;
+  text-shadow:0 0 10px rgba(170,140,255,.4);
+}
+
+#riddle{
+  margin:20px 0;
+  line-height:1.6;
+  font-size:1rem;
+  color:#eceaff;
+}
+
+input{
+  width:78%;
+  padding:10px;
+  background:#0c0a17;
+  border:1px solid #6f5cff55;
+  border-radius:6px;
+  color:#fff;
+  outline:none;
+  font-size:.9rem;
+  text-align:center;
+}
+
+button{
+  margin-top:12px;
+  padding:8px 20px;
+  background:#1a1533;
+  border:1px solid #8b7fff66;
+  color:#ddd8ff;
+  border-radius:6px;
+  cursor:pointer;
+  transition:.3s;
+}
+button:hover{
+  background:#2a2260;
+  box-shadow:0 0 15px #8f7fff66;
+}
+
+#msg{
+  margin-top:15px;
+  min-height:20px;
+  font-size:.9rem;
+  color:#bfb6ff;
+  letter-spacing:.5px;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(15px)}
+  to{opacity:1; transform:translateY(0)}
+}
+
+#overlay{
+  position:fixed;
+  inset:0;
+  background:black;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  font-size:1.1rem;
+  opacity:0;
+  pointer-events:none;
+  z-index:10;
+  padding:20px;
+  flex-direction:column;
+}
+.line{
+  opacity:0;
+  margin:5px 0;
+  transition:opacity 1s ease;
+}
+
+/* intro animations */
+@keyframes fadeInLine{
+  from{opacity:0; transform:translateY(10px)}
+  to{opacity:1; transform:translateY(0)}
+}
+
+@keyframes hauntedDrift{
+  0% {text-shadow:0 0 4px #c8baff,0 0 10px #b0a0ff; transform:translate(0,0);}
+  25% {text-shadow:0 0 6px #d0bfff,0 0 14px #b8a0ff; transform:translate(1px,-1px);}
+  50% {text-shadow:0 0 5px #c0aaff,0 0 12px #a8a0ff; transform:translate(-1px,1px);}
+  75% {text-shadow:0 0 7px #d8c0ff,0 0 15px #c0a0ff; transform:translate(1px,1px);}
+  100% {text-shadow:0 0 4px #c8baff,0 0 10px #b0a0ff; transform:translate(0,0);}
+}
+
+/* fade out intro */
+@keyframes fadeOutIntro{
+  to{opacity:0; visibility:hidden;}
+}
+</style>
+</head>
+<body>
+
+<!-- Haunted intro cinematic -->
+<div id="intro">
+  <span>Whispers crawl along the walls…</span>
+  <span>Shadows gather in every corner…</span>
+  <span>Only one mind can see the final path.</span>
+</div>
+
+<div id="card">
+<h1>THE LAST DOOR</h1>
+
+<div id="riddle">
+I built this house.<br>
+I filled it with whispers.<br>
+I locked every door.<br>
+And I brought you here.<br><br>
+<b>What am I?</b>
+</div>
+
+<input id="answer" placeholder="type your answer...">
+<br>
+<button onclick="check()">Answer</button>
+
+<div id="msg"></div>
+</div>
+
+<div id="overlay">
+  <div class="line">✔ You have unlocked the final door…</div>
+  <div class="line">The house releases its treasure.</div>
+</div>
+
+<script>
+let wrong=0;
+
+// Show card after intro fades out
+window.addEventListener('DOMContentLoaded', () => {
+  const card=document.getElementById('card');
+
+  setTimeout(()=>{
+    card.style.opacity=1;
+  },4000); // 1s delay + 3s animation
+});
+
+function check(){
+  const val=document.getElementById("answer").value
+      .toLowerCase().trim();
+
+  if(val==="mind"){
+    const overlay=document.getElementById("overlay");
+    overlay.style.opacity="1";
+    overlay.style.pointerEvents="auto";
+    document.getElementById("card").style.opacity="0.2";
+
+    const lines=overlay.querySelectorAll('.line');
+    lines.forEach((line,i)=>{
+      setTimeout(()=>{ line.style.opacity=1; }, i*1000);
+    });
+
+    setTimeout(()=>{
+      window.location.href="treasure.html"; // redirect to treasure page
+    }, 3000 + lines.length*1000);
+  }
+  else{
+    wrong++;
+    const msgs=[
+      "The walls hum your doubt…",
+      "The door shudders, but remains closed…",
+      "A whisper hisses: ‘Try again…’"
+    ];
+    document.getElementById("msg").textContent=
+      msgs[Math.min(wrong-1,msgs.length-1)];
+    document.body.style.backgroundPosition=
+      Math.random()*100+"% "+Math.random()*100+"%";
+  }
+}
+</script>
+
+</body>
+</html>
