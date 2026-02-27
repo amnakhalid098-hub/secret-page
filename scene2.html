@@ -41,8 +41,7 @@ body::before{
   z-index:20;
   padding:20px;
   flex-direction:column;
-  animation:fadeOutIntro 3s ease forwards;
-  animation-delay:1s;
+  transition: opacity 1.5s ease;
 }
 #intro span{
   opacity:0;
@@ -154,10 +153,6 @@ button:hover{
   to{opacity:1; transform:translateY(0)}
 }
 
-/* fade out intro */
-@keyframes fadeOutIntro{
-  to{opacity:0; visibility:hidden;}
-}
 </style>
 </head>
 <body>
@@ -199,9 +194,14 @@ window.addEventListener('DOMContentLoaded', () => {
   const card = document.getElementById('card');
   const intro = document.getElementById('intro');
 
-  setTimeout(() => {
-    card.style.opacity = 1;
-  }, 4000); // 1s delay + 3s animation
+  setTimeout(()=>{
+  intro.style.opacity="0";
+},2000);
+
+setTimeout(()=>{
+  intro.remove();
+  card.style.opacity="1";
+},3500);
 });
 
 function check(){
