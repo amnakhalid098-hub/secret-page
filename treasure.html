@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Final Treasure</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  /* fallback gray + optional classroom background */
+  background: #666 url("classroom.jpg") center/cover no-repeat;
+  font-family: Georgia, serif;
+  overflow:hidden;
+  position: relative;
+}
+
+/* vignette overlay */
+body::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle,transparent 40%,rgba(0,0,0,0.9));
+  pointer-events: none;
+}
+
+/* center container */
+#scene{
+  position:relative;
+  z-index:2;
+  text-align:center;
+}
+
+/* CLOSED SCROLL */
+#scrollClosed{
+  width:170px;
+  cursor:pointer;
+  animation:float 3s ease-in-out infinite;
+}
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+
+/* OPEN SCROLL */
+#scrollOpen{
+  display:none;
+  background:#efe3c2;
+  color:#2a1a0f;
+  padding:40px;
+  width:420px;
+  max-height:65vh;
+  overflow-y:auto;
+  border-radius:6px;
+  box-shadow:
+    inset 0 0 40px rgba(0,0,0,0.25),
+    0 0 25px rgba(255,230,150,0.15);
+  text-align:left;
+  line-height:1.6;
+  animation:openScroll 1.2s ease;
+  cursor:pointer;
+}
+@keyframes openScroll{
+  from{transform:scaleY(.1);opacity:0}
+  to{transform:scaleY(1);opacity:1}
+}
+
+/* CHEST */
+#chest{
+  display:none;
+  width:140px;
+  margin-top:25px;
+  cursor:pointer;
+  animation:float 3s ease-in-out infinite;
+}
+
+/* LETTER */
+#letter{
+  display:none;
+  background:#f5ecd9;
+  color:#2d1b0e;
+  padding:30px;
+  width:460px;
+  max-height:65vh;
+  overflow-y:auto;
+  margin:auto;
+  margin-top:25px;
+  border-radius:6px;
+  box-shadow:0 0 30px rgba(255,240,180,0.2);
+  text-align:left;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* BUTTON inside scroll */
+#endBtn{
+  display:none;
+  margin-top:20px;
+  padding:12px 26px;
+  border:none;
+  background:#111;
+  color:#eee;
+  border-radius:25px;
+  cursor:pointer;
+  align-self: center; /* center horizontally */
+}
+
+/* BLACK ENDING */
+#black{
+  position:fixed;
+  inset:0;
+  background:black;
+  display:none;
+  z-index:10;
+}
+</style>
+</head>
+<body>
+
+<div id="scene">
+
+  <img id="scrollClosed" src="scroll_closed.png">
+
+  <div id="scrollOpen"></div>
+
+  <img id="chest" src="chest.png">
+
+  <div id="letter"></div>
+
+</div>
+
+<div id="black"></div>
+
+<script>
+const closed = document.getElementById("scrollClosed")
+const open = document.getElementById("scrollOpen")
+const chest = document.getElementById("chest")
+const letter = document.getElementById("letter")
+const black = document.getElementById("black")
+
+/* CLICK CLOSED SCROLL */
+closed.onclick = () => {
+  closed.style.display = "none"
+  open.style.display = "block"
+
+  open.innerHTML = `
+<h2 style="text-align:center">📜 Scroll of Completion</h2>
+
+To the One Who Endured,<br><br>
+
+The trials were not meant to be passed. The doors were not meant to open. The House was not meant to yield.<br><br>
+
+Yet you walked where silence watches. You answered where echoes listen. You remained where shadows test.<br><br>
+
+The halls remember your steps. The walls remember your voice. The dark remembers your name.<br><br>
+
+You were not guided here. You were recognized.<br><br>
+
+<center><b>Bearer of the Final Key<br>The One The House Chose</b></center><br>
+
+<center><i>(click scroll to continue)</i></center>
+`
+}
+
+/* CLICK OPEN SCROLL → CLOSE IT + SHOW CHEST */
+open.onclick = () => {
+  open.style.display = "none"
+  chest.style.display = "block"
+}
+
+/* CHEST CLICK */
+chest.onclick = () => {
+  chest.src = "chest_open.png"
+
+  setTimeout(() => {
+    letter.style.display = "flex";  // flex for button alignment
+    letter.innerHTML = `
+<h3 style="text-align:center">Most who enter seek treasure. You became it.</h3><br>
+
+Hey you,<br><br>
+
+If you’re reading this, pause.<br><br>
+
+This isn’t a puzzle. Not a test.<br><br>
+
+It’s something I need you to know.<br><br>
+
+You are unbelievably precious to me.<br><br>
+
+Not in a casual way. In a quiet, deeply-meant way that stays even on ordinary days.<br><br>
+
+You don’t realize half the things that make you special — the way you think, notice details, change a room just by existing.<br><br>
+
+There’s something about you that can’t be explained. Like stardust, curiosity, chaos, softness, and strength were mixed together just to see what would happen.<br><br>
+
+And what happened… was you.<br><br>
+
+You don’t need to change a single thing to be worthy of love or admiration.<br><br>
+
+You are my favorite person.<br><br>
+
+Your smile is honestly a public hazard. Suspicious levels of power.<br><br>
+
+If the world were a storybook, you’d be the line people underline.<br><br>
+
+You matter more than you think.<br><br>
+
+And to me?<br><br>
+
+You’re someone I’d choose in every universe.<br><br>
+
+Not because you’re flawless.<br><br>
+
+Because you’re real.<br><br>
+
+So if you ever doubt your worth… come back and read this again.<br><br>
+
+— someone who treasures you more than any prize 💫<br><br>
+
+<i>P.S. If the walls ever whisper again… answer them. They like you.</i>
+
+<br><button id="endBtn">Close</button>
+`;
+
+    // show button
+    const btnInside = document.getElementById("endBtn");
+    btnInside.style.display = "block";
+
+    // END BUTTON CLICK
+    btnInside.onclick = () => {
+      black.style.display = "block";
+    };
+  }, 900);
+};
+</script>
+
+</body>
+</html>
