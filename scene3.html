@@ -47,12 +47,11 @@ body::before{
 #intro span{
   opacity:0;
   display:block;
-  animation:fadeInLine 2s forwards, hauntedUrgent 2s infinite alternate;
+  animation:fadeInLine 2s forwards; /* only fade-in */
   animation-delay:0.5s;
   letter-spacing:1.5px;
   text-shadow: 0 0 5px #c8baff, 0 0 12px #b0a0ff;
 }
-
 /* main riddle card */
 #card{
   position:relative;
@@ -152,15 +151,6 @@ button:hover{
 @keyframes fadeInLine{
   from{opacity:0; transform:translateY(10px)}
   to{opacity:1; transform:translateY(0)}
-}
-
-/* haunted intro drift urgent */
-@keyframes hauntedUrgent{
-  0% {text-shadow:0 0 4px #c8baff,0 0 10px #b0a0ff; transform:translate(0,0);}
-  25% {text-shadow:0 0 6px #d0bfff,0 0 14px #b8a0ff; transform:translate(1px,-1px);}
-  50% {text-shadow:0 0 5px #c0aaff,0 0 12px #a8a0ff; transform:translate(-1px,1px);}
-  75% {text-shadow:0 0 7px #d8c0ff,0 0 15px #c0a0ff; transform:translate(1px,1px);}
-  100% {text-shadow:0 0 4px #c8baff,0 0 10px #b0a0ff; transform:translate(0,0);}
 }
 
 /* fade out intro */
