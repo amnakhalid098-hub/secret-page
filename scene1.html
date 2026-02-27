@@ -27,7 +27,7 @@ body::before{
   z-index:1;
 }
 
-/* haunted intro screen */
+/* simple intro screen with fade-in/out */
 #intro{
   position:fixed;
   inset:0;
@@ -48,14 +48,9 @@ body::before{
 #intro span{
   opacity:0;
   display:block;
-  animation:fadeInLine 2s forwards;
-  animation-delay:0.5s;
+  animation:fadeInLine 2s forwards; /* ONLY fade in */
   letter-spacing:1.5px;
   text-shadow: 0 0 5px #c8baff, 0 0 10px #b0a0ff;
-  animation-name:fadeInLine, hauntedFlicker;
-  animation-duration:2s, 1.5s;
-  animation-fill-mode:forwards;
-  animation-iteration-count:1, infinite;
 }
 
 /* main riddle card */
@@ -72,7 +67,7 @@ body::before{
     0 0 30px rgba(140,110,255,.15),
     inset 0 0 20px rgba(160,130,255,.08);
   text-align:center;
-  animation:fadeIn 1.8s ease;
+  animation:fadeIn 1.8s ease; /* only fade-in */
   opacity:0; /* hidden initially */
 }
 
@@ -126,12 +121,6 @@ button:hover{
   letter-spacing:.5px;
 }
 
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(15px)}
-  to{opacity:1; transform:translateY(0)}
-}
-
-/* fade overlay lines */
 #overlay{
   position:fixed;
   inset:0;
@@ -154,24 +143,17 @@ button:hover{
   transition:opacity 1s ease;
 }
 
-/* fade-in for intro text */
+/* fade-in animation only */
 @keyframes fadeInLine{
-  from{opacity:0; transform:translateY(10px)}
-  to{opacity:1; transform:translateY(0)}
+  from{opacity:0;}
+  to{opacity:1;}
 }
-
-/* fade out intro */
+@keyframes fadeIn{
+  from{opacity:0;}
+  to{opacity:1;}
+}
 @keyframes fadeOutIntro{
   to{opacity:0; visibility:hidden;}
-}
-
-/* haunted flicker effect */
-@keyframes hauntedFlicker{
-  0% {text-shadow:0 0 3px #c8baff,0 0 8px #b0a0ff; transform:translate(0,0);}
-  25% {text-shadow:0 0 5px #d0bfff,0 0 12px #b8a0ff; transform:translate(-1px,1px);}
-  50% {text-shadow:0 0 4px #c0aaff,0 0 10px #a8a0ff; transform:translate(1px,-1px);}
-  75% {text-shadow:0 0 6px #d8c0ff,0 0 14px #c0a0ff; transform:translate(0,1px);}
-  100% {text-shadow:0 0 3px #c8baff,0 0 8px #b0a0ff; transform:translate(0,0);}
 }
 </style>
 </head>
@@ -189,10 +171,8 @@ button:hover{
 <div id="riddle">
 I follow you in light,<br>
 I swallow you in dark.<br><br>
-
 I am shaped like you<br>
 Yet have no heart.<br><br>
-
 <b>What am I?</b>
 </div>
 
@@ -214,12 +194,9 @@ let wrong=0;
 // Show card after intro fades out
 window.addEventListener('DOMContentLoaded', () => {
   const card = document.getElementById('card');
-  const intro = document.getElementById('intro');
-
-  // Wait for intro animation + delay
   setTimeout(() => {
     card.style.opacity = 1;
-  }, 4000); // 1s delay + 3s animation
+  }, 4000); // 1s delay + 3s intro fade
 });
 
 function check(){
@@ -232,15 +209,11 @@ function check(){
     overlay.style.pointerEvents = "auto";
     document.getElementById("card").style.opacity="0.2";
 
-    // fade in lines one by one
     const lines = overlay.querySelectorAll('.line');
     lines.forEach((line, i) => {
-      setTimeout(() => {
-        line.style.opacity = 1;
-      }, i * 1000);
+      setTimeout(() => { line.style.opacity = 1; }, i * 1000);
     });
 
-    // redirect after all lines appear
     setTimeout(()=>{
       window.location.href="scene2.html";
     }, 3000 + lines.length*1000);
