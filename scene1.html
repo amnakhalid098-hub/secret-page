@@ -117,10 +117,6 @@ button:hover{
 }
 
 /* fade-in animation only */
-@keyframes fadeInLine{
-  from{opacity:0;}
-  to{opacity:1;}
-}
 @keyframes fadeIn{
   from{opacity:0;}
   to{opacity:1;}
@@ -155,9 +151,6 @@ Yet have no heart.<br><br>
 <script>
 let wrong=0;
 
-window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('card').style.opacity = 1;
-});
 function check(){
   const val=document.getElementById("answer").value
       .toLowerCase().trim();
