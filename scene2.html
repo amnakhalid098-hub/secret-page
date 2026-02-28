@@ -26,32 +26,6 @@ body::before{
   z-index:1;
 }
 
-/* haunted intro screen — fresh animation */
-#intro{
-  position:fixed;
-  inset:0;
-  background:black;
-  color:#c8baff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  font-size:1.3rem;
-  opacity:1;
-  z-index:20;
-  padding:20px;
-  flex-direction:column;
-  transition: opacity 1.5s ease;
-}
-#intro span{
-  opacity:0;
-  display:block;
-  animation:fadeInLine 2s forwards; /* ONLY fade-in */
-  animation-delay:0.5s;
-  letter-spacing:1.5px;
-  text-shadow: 0 0 5px #c8baff, 0 0 10px #b0a0ff;
-}
-
 /* main riddle card */
 #card{
   position:relative;
@@ -147,21 +121,9 @@ button:hover{
   transition:opacity 1s ease;
 }
 
-/* intro animations */
-@keyframes fadeInLine{
-  from{opacity:0; transform:translateY(10px)}
-  to{opacity:1; transform:translateY(0)}
-}
-
 </style>
 </head>
 <body>
-
-<!-- Haunted intro cinematic -->
-<div id="intro">
-  <span>In this room, eyes watch where you do not…</span>
-  <span>Solve the riddle… or be forgotten.</span>
-</div>
 
 <div id="card">
 <h1>THE WATCHING ROOM</h1>
@@ -189,21 +151,10 @@ Ignore me — I steal.<br><br>
 <script>
 let wrong=0;
 
-// Show card after intro fades out
-window.addEventListener('DOMContentLoaded', () => {
-  const card = document.getElementById('card');
-  const intro = document.getElementById('intro');
-
-  setTimeout(()=>{
-  intro.style.opacity="0";
-},2000);
-
-setTimeout(()=>{
-  intro.remove();
-  card.style.opacity="1";
-},3500);
+  window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('card').style.opacity="1";
 });
-
+  
 function check(){
   const val=document.getElementById("answer").value
       .toLowerCase().trim();
