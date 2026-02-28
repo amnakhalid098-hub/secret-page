@@ -26,32 +26,6 @@ body::before{
   z-index:1;
 }
 
-/* haunted intro screen — new drift for urgency */
-#intro{
-  position:fixed;
-  inset:0;
-  background:black;
-  color:#c8baff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  font-size:1.3rem;
-  opacity:1;
-  z-index:20;
-  padding:20px;
-  flex-direction:column;
-  animation:fadeOutIntro 3s ease forwards;
-  animation-delay:1s;
-}
-#intro span{
-  opacity:0;
-  display:block;
-  animation:fadeInLine 2s forwards; /* only fade-in */
-  animation-delay:0.5s;
-  letter-spacing:1.5px;
-  text-shadow: 0 0 5px #c8baff, 0 0 12px #b0a0ff;
-}
 /* main riddle card */
 #card{
   position:relative;
@@ -147,25 +121,9 @@ button:hover{
   transition:opacity 1s ease;
 }
 
-/* intro animations */
-@keyframes fadeInLine{
-  from{opacity:0; transform:translateY(10px)}
-  to{opacity:1; transform:translateY(0)}
-}
-
-/* fade out intro */
-@keyframes fadeOutIntro{
-  to{opacity:0; visibility:hidden;}
-}
 </style>
 </head>
 <body>
-
-<!-- Haunted intro cinematic -->
-<div id="intro">
-  <span>Each step ticks closer to the inevitable…</span>
-  <span>Can you escape the devouring hours?</span>
-</div>
 
 <div id="card">
 <h1>THE CLOCK STAIRCASE</h1>
@@ -193,14 +151,9 @@ let wrong=0;
 
 // Show card after intro fades out
 window.addEventListener('DOMContentLoaded', () => {
-  const card = document.getElementById('card');
-  const intro = document.getElementById('intro');
-
-  setTimeout(() => {
-    card.style.opacity = 1;
-  }, 4000); // 1s delay + 3s animation
+  document.getElementById('card').style.opacity = 1;
 });
-
+  
 function check(){
   const val=document.getElementById("answer").value
       .toLowerCase().trim();
