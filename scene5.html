@@ -26,33 +26,6 @@ body::before{
   z-index:1;
 }
 
-/* haunted intro cinematic */
-#intro{
-  position:fixed;
-  inset:0;
-  background:black;
-  color:#c8baff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  font-size:1.3rem;
-  opacity:1;
-  z-index:20;
-  padding:20px;
-  flex-direction:column;
-  animation:fadeOutIntro 3s ease forwards;
-  animation-delay:1s;
-}
-#intro span{
-  opacity:0;
-  display:block;
-  animation:fadeInLine 2s forwards;
-  animation-delay:0.5s;
-  letter-spacing:1.5px;
-  text-shadow:0 0 5px #c8baff,0 0 12px #b0a0ff;
-}
-
 /* main riddle card */
 #card{
   position:relative;
@@ -147,27 +120,10 @@ button:hover{
   margin:5px 0;
   transition:opacity 1s ease;
 }
-
-/* intro animations */
-@keyframes fadeInLine{
-  from{opacity:0; transform:translateY(10px)}
-  to{opacity:1; transform:translateY(0)}
-}
-
-/* fade out intro */
-@keyframes fadeOutIntro{
-  to{opacity:0; visibility:hidden;}
-}
+  
 </style>
 </head>
 <body>
-
-<!-- Haunted intro cinematic -->
-<div id="intro">
-  <span>Whispers crawl along the walls…</span>
-  <span>Shadows gather in every corner…</span>
-  <span>Only one mind can see the final path.</span>
-</div>
 
 <div id="card">
 <h1>THE LAST DOOR</h1>
@@ -195,15 +151,10 @@ And I brought you here.<br><br>
 <script>
 let wrong=0;
 
-// Show card after intro fades out
 window.addEventListener('DOMContentLoaded', () => {
-  const card=document.getElementById('card');
-
-  setTimeout(()=>{
-    card.style.opacity=1;
-  },4000); // 1s delay + 3s animation
+  document.getElementById('card').style.opacity = 1;
 });
-
+  
 function check(){
   const val=document.getElementById("answer").value
       .toLowerCase().trim();
