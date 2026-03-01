@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Letter</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Georgia, serif;
+  background:#666;
+  display:flex;
+  justify-content:center;
+}
+
+/* CENTER LIGHT EFFECT */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at center,
+      rgba(255,255,255,0.35) 0%,
+      rgba(255,255,255,0.15) 25%,
+      rgba(0,0,0,0.75) 75%);
+  z-index:0;
+}
+
+/* page */
+.page{
+  position:relative;
+  z-index:1;
+  background:#f5ecd9;
+  color:#2d1b0e;
+  width:75%;
+  max-width:650px;
+  margin:70px 0;
+  padding:55px 60px;
+  line-height:1.85;
+  font-size:18px;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.25),
+    0 25px 60px rgba(0,0,0,.85);
+  border-radius:8px;
+
+  animation:fade 1.2s ease;
+}
+
+/* title */
+h1{
+  text-align:center;
+  margin-top:0;
+  margin-bottom:35px;
+  font-weight:normal;
+}
+
+/* fade animation */
+@keyframes fade{
+from{opacity:0; transform:translateY(40px)}
+to{opacity:1; transform:translateY(0)}
+}
+
+/* ending fade screen */
+#ending{
+  position:fixed;
+  inset:0;
+  background:black;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 2s ease;
+  z-index:10;
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <p><b>Most who enter seek treasure. You became it.</b></p>
+
+<h1>Hey you,</h1>
+
+<p>
+If you’re reading this, it means you made it here. Before anything else,
+pause for a second. Not to solve anything. Not to think ahead. Just… pause.
+</p>
+
+<p>
+This letter isn’t a puzzle. It isn’t a test.  
+It’s just something I need you to know.
+</p>
+
+<p>
+  You are so unbelievably precious to me. 
+  And I don’t mean that in the casual way people throw the word around. 
+  I mean it in the quiet, serious, deeply-meant way. The kind that sits in someone’s chest and refuses to leave. The kind that stays even on ordinary days. 
+  Especially on ordinary days.
+</p>
+
+<p>
+  You don’t even realize half the things that make you special.
+  The way you think. The way you react. The way you notice tiny details others ignore.
+  The way your presence changes the mood of a space without you even trying.
+</p>
+
+<p>
+  There’s something about you that can’t really be explained properly. 
+  It’s not just your personality, or your humor, or your mind, it’s the combination of all of it. 
+  Like someone took stardust, curiosity, chaos, softness, and strength and decided to put them all in one human being just to see what would happen.
+</p>
+
+<p>And what happened… was you.</p>
+
+<p>
+  I know you don't always see yourself the way I see you. 
+  Sometimes you doubt yourself. Sometimes you wonder if you’re doing enough, being enough, shining enough.
+</p>
+
+<p>
+  But listen to me carefully when I say this:
+</p>
+
+<p> 
+You don’t need to change a single thing to be worthy of love, appreciation, or admiration. 
+Not one habit. Not one flaw. Not one weird little trait you think is strange. 
+The things you worry about are often the exact same things that make you you , and you are... my favorite person.
+</p>
+<p>
+  You’re not valuable because you achieve things. You’re not special because you succeed. You’re not important because you prove anything.
+</p>
+
+  <p>
+    You’re all of those things simply because you exist.
+  </p>
+
+  <p>
+    I hope you know how rare it is to find someone whose presence feels like comfort and adventure at the same time. 
+    Someone who can be calm and chaotic. Soft and strong. Thoughtful and hilarious. (Yes, I’m talking about you. Accept it)
+  </p>
+
+  <p>
+    If the world were a storybook, you wouldn’t be a side character.
+    You’d be the line people underline. The paragraph people reread. The page people fold the corner of so they can come back to it later.
+  </p>
+
+  <p>
+    You matter more than you think you do. To more people than you realize. In more ways than you’ll probably ever fully understand.
+  </p>
+
+  <p>
+    And to me?
+  </p>
+
+  <p>
+    You’re someone I’m grateful for in a way that doesn’t really fit into simple words. 
+    You’re the kind of person I’d choose in every timeline, every universe, every version of reality. Even if I didn’t remember why, I’d still somehow end up choosing you again.
+  </p>
+
+  <p>
+    Not because you’re perfect in the flawless sense.
+  </p>
+
+  <p>
+    But because you’re perfect in the real sense.
+  </p>
+
+  <p>
+    Perfect in the way sunlight is, sometimes soft, sometimes bright, sometimes hidden behind clouds, but always there.
+  </p>
+
+  <p>
+    So if you ever forget your worth, or doubt your magic, or feel like you’re not enough…
+  </p>
+
+  <p>
+    come back to this letter.
+  </p>
+
+  <p>
+    Read it again.
+  </p>
+
+  <p>
+    And remember that somewhere, someone sees you clearly, and thinks you’re one of the best things this world has.
+  </p>
+
+  <p>
+    Always have been. Always will be.
+  </p>
+
+<p style="margin-top:45px;">
+— someone who treasures you more than any prize ✨
+</p>
+
+  <p>
+    P.S. If the walls ever whisper again…
+ </p>
+
+  <p>
+    answer them.
+  </p>
+
+  <p>
+    They like you.
+  </p>
+
+</div>
+
+<div id="ending"></div>
+
+<script>
+let triggered=false;
+
+window.addEventListener("scroll",()=>{
+  if(triggered) return;
+
+  if(window.innerHeight + window.scrollY >= document.body.offsetHeight-2){
+    triggered=true;
+    document.getElementById("ending").style.opacity="1";
+  }
+});
+</script>
+
+</body>
+</html>
