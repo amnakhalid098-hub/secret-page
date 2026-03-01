@@ -129,11 +129,7 @@ button:hover{
 <h1>THE WATCHING ROOM</h1>
 
 <div id="riddle">
-I show what you are<br>
-But never what you feel.<br>
-Break me once — I multiply.<br>
-Ignore me — I steal.<br><br>
-<b>What am I?</b>
+  What has a head and a tail but no body?
 </div>
 
 <input id="answer" placeholder="type your answer...">
@@ -159,7 +155,7 @@ function check(){
   const val=document.getElementById("answer").value
       .toLowerCase().trim();
 
-  if(val==="mirror"){
+  if(val==="a coin"){
     const overlay=document.getElementById("overlay");
     overlay.style.opacity = "1";
     overlay.style.pointerEvents = "auto";
