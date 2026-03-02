@@ -260,44 +260,39 @@ setTimeout(()=>s.remove(),1000);
 }
 }
 
-/* MOVEMENT */
-document.addEventListener("keydown",e=>{
-  function move(dir){
- if(dir==="up") y-=10
- if(dir==="down") y+=10
- if(dir==="left") x-=10
- if(dir==="right") x+=10
-
- character.style.top=y+"px"
- character.style.left=x+"px"
-}
-
+/* MOVEMENT SYSTEM */
+function move(dir){
 let nx=player.x;
 let ny=player.y;
 
-if(e.key==="ArrowUp")ny--;
-if(e.key==="ArrowDown")ny++;
-if(e.key==="ArrowLeft")nx--;
-if(e.key==="ArrowRight")nx++;
+if(dir==="up")ny--;
+if(dir==="down")ny++;
+if(dir==="left")nx--;
+if(dir==="right")nx++;
 
-if(paths[ny]&&paths[ny][nx]&&paths[ny][nx]!=="#" && !(paths[ny][nx]==="D"&&!doorOpen)){
+if(paths[ny] && paths[ny][nx] && paths[ny][nx]!=="#" && !(paths[ny][nx]==="D"&&!doorOpen)){
 
 player={x:nx,y:ny};
 
 if(paths[ny][nx]==="E"){
-
 alert("The crystal path accepts you.");
-
 document.body.style.transition="opacity 1s";
 document.body.style.opacity="0";
-
 setTimeout(()=>window.location.href="reward_cavern.html",1000);
 }
 
 render();
 }
-});
+}
 
+/* KEYBOARD CONTROLS */
+document.addEventListener("keydown",e=>{
+if(e.key==="ArrowUp")move("up");
+if(e.key==="ArrowDown")move("down");
+if(e.key==="ArrowLeft")move("left");
+if(e.key==="ArrowRight")move("right");
+});
+  
 /* INIT */
 render();
 
